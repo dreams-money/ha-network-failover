@@ -5,6 +5,12 @@
     "router_config": {
         "opnsense_api_key": "szesecretzuGfXsecretR+aEtsecretjxeEgisecretyaro38secretOdaQYsecret02xZusBtsecret",
         "opnsense_api_secret": "szesecretzuGfXsecretR+aEtsecretjxeEgisecretyaro38secretOdaQYsecret02xZusBtsecret",
+
+        "omada_port": "8043",
+        "omada_client_id": "ret1secretb48secret75secret0bsec",
+        "omada_oauth_client_id": "11secretd0secret8dsecret82secret",
+        "omada_oauth_client_secret": "3csecret59secretbfsecretf5secret5",
+        "omada_site_id": "69secret63secretefsecret"
     },
     "peers": {
         "patroni-san-franciso": {
