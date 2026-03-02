@@ -15,6 +15,7 @@ const (
 	NODE_PRIMARY = "primary"
 	NODE_REPLICA = "replica"
 	NODE_RUNNING = "running"
+	NODE_DOWN    = "down"
 )
 
 type ClusterStatus []Node
