@@ -1,15 +1,15 @@
 package dns
 
 import (
-	"context"
 	"errors"
 	"log"
 
-	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/route53"
 	"github.com/dreams-money/failover/config"
 	"github.com/dreams-money/failover/ha"
 )
+
+var client = mustMakeAWSClient()
 
 func Failover(cfg config.Config, clusterStatus ha.ClusterStatus) error {
 	leader, err := clusterStatus.GetLeaderName()
@@ -25,13 +25,6 @@ func Failover(cfg config.Config, clusterStatus ha.ClusterStatus) error {
 	if err != nil {
 		return err
 	}
-
-	awsCfg, err := awsconfig.LoadDefaultConfig(context.TODO(), awsconfig.WithRegion("us-west-2"))
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	client := route53.NewFromConfig(awsCfg)
 
 	err = updatePrimary(cfg, client, publicIp)
 	if err != nil {
