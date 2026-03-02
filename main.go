@@ -35,7 +35,7 @@ func main() {
 	router.SetAuthorization(configuration)
 	err = router.SimpleCall(configuration)
 	if err != nil {
-		log.Println("Authorization failed", err)
+		log.Println("Router authorization failed. Simple call returned: ", err)
 		os.Exit(1)
 		return
 	}
