@@ -19,12 +19,16 @@ func main() {
 	// Load config
 	configuration, err := config.LoadProgramConfiguration()
 	if err != nil {
-		log.Panic(err)
+		log.Println(err)
+		os.Exit(1)
+		return
 	}
 
 	router, err := routers.Make(configuration)
 	if err != nil {
-		log.Panic(err)
+		log.Println(err)
+		os.Exit(1)
+		return
 	}
 
 	// Set Router Auth
@@ -98,7 +102,9 @@ func main() {
 	log.Println("Server listening on http://localhost:" + configuration.AppPort)
 	err = http.ListenAndServe(":"+configuration.AppPort, nil)
 	if err != nil {
-		log.Panicf("Error starting server: %s\n", err)
+		log.Printf("Error starting server: %s\n", err)
+		os.Exit(1)
+		return
 	}
 }
 
