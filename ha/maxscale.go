@@ -65,7 +65,7 @@ func (MaxScale) GetClusterStatus(cfg config.Config) (ClusterStatus, error) {
 	for _, server := range asr.Data {
 		node, err := parseNode(server)
 		if err != nil {
-			return status, err
+			log.Println(server.ID, err)
 		}
 		status = append(status, node)
 	}
@@ -77,39 +77,29 @@ func parseNode(server apiServer) (Node, error) {
 	node := Node{}
 	node.Name = server.ID
 
-	nodeStates := strings.Split(server.Attributes.State, ", ")
+	column := strings.Split(server.Attributes.State, ", ")
 
-	if len(nodeStates) < 1 {
+	if len(column) < 1 {
 		node.State = NODE_DOWN
 		return node, nil
 	}
 
-	nodeRole := nodeStates[0]
-	switch nodeRole {
+	switch column[0] {
 	case "Master":
-		nodeRole = NODE_PRIMARY
+		node.State = NODE_RUNNING
+		node.Role = NODE_PRIMARY
 	case "Slave":
-		nodeRole = NODE_REPLICA
-	default:
-		return node, errors.New("unknown node role: " + nodeRole)
-	}
-	node.Role = nodeRole
-
-	if len(nodeStates) < 2 && nodeStates[1] == "Running" {
 		node.State = NODE_RUNNING
-		log.Println("node possibily not synced: " + node.Name)
+		node.Role = NODE_REPLICA
+	case "Down":
+		node.State = NODE_DOWN
 		return node, nil
+	default:
+		return node, errors.New("unknown node state: " + column[0])
 	}
 
-	nodeSynced := nodeStates[1]
-	nodeStatus := nodeStates[2]
-
-	node.State = NODE_DOWN
-	if nodeStatus == "Running" && nodeSynced == "Synced" {
-		node.State = NODE_RUNNING
-	} else if nodeStatus == "Running" || nodeSynced == "Running" {
-		log.Println("node not synced: " + node.Name)
-		node.State = NODE_RUNNING
+	if len(column) > 1 && column[1] != "Synced" {
+		log.Printf("Node %v state is: %v\n", node.Name, column[1])
 	}
 
 	return node, nil
